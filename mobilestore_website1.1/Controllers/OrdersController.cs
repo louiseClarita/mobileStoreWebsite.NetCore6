@@ -1,19 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using mobilestore_website1._1.Data;
-using mobilestore_website1._1.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-
-using System.Security.Claims;
+﻿using mobilestore_website1._1.Models;
 
 
 namespace mobilestore_website1._1.Controllers
@@ -25,16 +10,16 @@ namespace mobilestore_website1._1.Controllers
         public OrdersController(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
-            
+
         }
 
-       /* public async Task<IActionResult> YourMethodName()
-        {
-            
-         }*/
+        /* public async Task<IActionResult> YourMethodName()
+         {
+
+          }*/
         private readonly Data.ApplicationDbContext _context;
 
-        public OrdersController(Data.ApplicationDbContext context,IUserService userService)
+        public OrdersController(Data.ApplicationDbContext context, IUserService userService)
         {
 
             _context = context;
@@ -45,13 +30,13 @@ namespace mobilestore_website1._1.Controllers
         [Authorize(Roles = "Administrator, Clients")]
         public async Task<IActionResult> Index()
         {
-             var applicationDbContext = _context.Order.Include(o => o.Product).Include(o => o.User);
+            var applicationDbContext = _context.Order.Include(o => o.Product).Include(o => o.User);
             return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Orders/Details/5
         [Authorize(Roles = "Administrator")]
-                           
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Order == null)
@@ -114,7 +99,7 @@ namespace mobilestore_website1._1.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "ProductId", order.ProductId);
-         
+
             ViewData["UserId"] = new SelectList(_context.Set<IdentityUser>(), "Id", "Id", order.UserId);
             //  ViewData["UserId"] = User.FindFirstValue(ClaimTypes.NameIdentifier);
             ViewData["UserName"] = User.Identity;
@@ -214,14 +199,14 @@ namespace mobilestore_website1._1.Controllers
             {
                 _context.Order.Remove(order);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
         [Authorize(Roles = "Administrator")]
         private bool OrderExists(int id)
         {
-          return (_context.Order?.Any(e => e.OrderId == id)).GetValueOrDefault();
+            return (_context.Order?.Any(e => e.OrderId == id)).GetValueOrDefault();
         }
     }
 }
